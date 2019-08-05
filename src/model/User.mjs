@@ -1,6 +1,5 @@
 import Sequelize from 'sequelize'
 import sequelize from '../db'
-import Spot from './Spot.mjs';
 
 const User = sequelize.define('user', {
   name: { type: Sequelize.STRING, allowNull: false },

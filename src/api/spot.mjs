@@ -3,35 +3,17 @@ import Spot from "../model/Spot.mjs";
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-  try {
-    const spots = await Spot.findAll()
-    return res.json(spots)
-  } catch (error) {
-    return res.status(500).json()
-  }
-})
+const notFound = res => notFound(res)
+const internalError = res => res.status(500).json('Something wrong!')
 
-router.get("/:id", async (req, res) => {
-  try {
-    const spot = await Spot.findBypl(req.param.id)
-    if (spot) {
-      return res.json(spot)
-    }
-  } catch (error) {
-    return res.status(500).json()
-  }
-});
-
-router.get("/search-free", async (req, res) => {
+router.get("/free", async (req, res) => {
   try {
     const spots = await Spot.findAll({
-      where: { isOccupied: false }
+      where: { occupancy: false }
     })
-    // const freeSpots = spots.filter(spot => !spot.isOccupied && spot).map(spot => spot)
     return res.json(spots)
   } catch (error) {
-    return res.status(500).json()
+    return internalError(res)
   }
 });
 
@@ -42,10 +24,50 @@ router.get("/search-by-user", async (req, res) => {
       return res.json(spot)
     }
     else {
-      return res.status(404).json('No spot found')
+      return notFound(res)
     }
   } catch (error) {
-    return res.status(500).json()
+    return internalError(res)
+  }
+});
+
+router.put('/assign/:id', async (req, res) => {
+  try {
+    const spot = await Spot.findByPk(req.body.id)
+
+    if (spot) {
+      const { userId } = req.body
+      await spot.update({ userId })
+      return res.json(`Spot °${spot.number} on floor ${spot.floor} is now assigned`)
+    }
+    else {
+      return notFound(res)
+    }
+  } catch (error) {
+    return internalError(res)
+  }
+})
+
+router.get('/', async (req, res) => {
+  try {
+    const spots = await Spot.findAll()
+    return res.json(spots)
+  } catch (error) {
+    return internalError(res)
+  }
+})
+
+router.get("/:id", async (req, res) => {
+  try {
+    const spot = await Spot.findBypl(req.param.id)
+    if (spot) {
+      return res.json(spot)
+    }
+    else {
+      return notFound(res)
+    }
+  } catch (error) {
+    return internalError(res)
   }
 });
 
@@ -60,7 +82,7 @@ router.post("/", async (req, res) => {
       return res.json()      
     }
   } catch (error) {
-    return res.status(500).json()
+    return internalError(res)
   }
 });
 
@@ -73,10 +95,10 @@ router.put("/:id", async (req, res) => {
       return res.json()
     }
     else {
-      return res.status(404).json('No spot found')
+      return notFound(res)
     }
   } catch (error) {
-    return res.status(500).json()
+    return internalError(res)
   }
 });
 
@@ -85,13 +107,13 @@ router.delete("/:id", async (req, res) => {
     const spot = await Spot.findByPk(req.param.id)
     if (spot) {
       await spot.destroy()
-      return res.json()
+      return res.json('Spot successfully deleted')
     }
     else {
-      return res.status(404).json('No spot found')
+      return notFound(res)
     }
   } catch (error) {
-    return res.status(500).json()
+    return internalError(res)
   }
 });
 
