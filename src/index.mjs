@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import sequelize from './db'
 import user from "./api/user";
 import spot from "./api/spot";
 
@@ -15,4 +16,6 @@ app.use(cors());
 app.use("/users", user);
 app.use("/spots", spot);
 
-app.listen(PORT, () => `Server running at port: ${PORT}`);
+sequelize.sync()
+.then(() => app.listen(PORT, () => `Server running at port: ${PORT}`))
+.catch(err => console.log(err))

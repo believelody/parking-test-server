@@ -1,6 +1,5 @@
 import Sequelize from 'sequelize'
 import sequelize from '../db'
-import Spot from './Spot.mjs';
 
 const User = sequelize.define('user', {
   name: { type: Sequelize.STRING, allowNull: false },
@@ -9,7 +8,5 @@ const User = sequelize.define('user', {
   role: { type: Sequelize.STRING, defaultValue: 'public' },
   car: { type: Sequelize.STRING, allowNull: false }
 })
-
-User.hasOne(Spot)
 
 export default User
