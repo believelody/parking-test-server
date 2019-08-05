@@ -1,3 +1,3 @@
 import Sequelize from 'sequelize'
 
-export default new Sequelize('postgres://gbhnjzgz:ko-Za4eDoWMKicczi08r8mEoLF1XFlHY@raja.db.elephantsql.com:5432/gbhnjzgz')
+export default new Sequelize('postgres://iydoxlfq:hdI7IBfnPLIzKnK3Z3kd3x5DvGEFXCe8@raja.db.elephantsql.com:5432/iydoxlfq')

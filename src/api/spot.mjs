@@ -3,8 +3,8 @@ import Spot from "../model/Spot.mjs";
 
 const router = express.Router();
 
-const notFound = res => notFound(res)
-const internalError = res => res.status(500).json('Something wrong!')
+const notFound = res => res.status(404).json('Spot not found')
+const internalError = res => res.status(500).json({msg: 'Something wrong!'})
 
 router.get("/free", async (req, res) => {
   try {
@@ -33,12 +33,11 @@ router.get("/search-by-user", async (req, res) => {
 
 router.put('/assign/:id', async (req, res) => {
   try {
-    const spot = await Spot.findByPk(req.body.id)
-
+    const spot = await Spot.findByPk(req.params.id)
     if (spot) {
       const { userId } = req.body
-      await spot.update({ userId })
-      return res.json(`Spot °${spot.number} on floor ${spot.floor} is now assigned`)
+      await spot.update({ userId, occupancy: true, occupied: "yes" })
+      return res.json({ msg: `Spot °${spot.number} on floor ${spot.floor} is now assigned` })
     }
     else {
       return notFound(res)
@@ -74,14 +73,15 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { number, floor } = req.body
-    const spot = Spot.findOne({ where: {number, floor}})
+    const spot = await Spot.findOne({ where: {number, floor}})
     if (spot) {
-      return res.status(403).json('This spot already exists')
+      return res.status(403).json({msg: 'This spot already exists'})
     } else {
-      await Spot.create(req.body)
-      return res.json()      
+      await Spot.create({ number, floor, occupancy: false, occupied: 'no' })
+      return res.json({msg: 'Spot successfully created'})      
     }
   } catch (error) {
+    console.log(error)
     return internalError(res)
   }
 });

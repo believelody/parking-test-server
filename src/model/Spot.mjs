@@ -6,7 +6,7 @@ const Spot = sequelize.define('spot', {
   number: { type: Sequelize.INTEGER, allowNull: false },
   floor: { type: Sequelize.INTEGER, allowNull: false },
   occupancy: { type: Sequelize.BOOLEAN, defaultValue: false },
-  occupied: { type: Sequelize.STRING },
+  occupied: { type: Sequelize.STRING, allowNull: false },
 })
 
 Spot.hasOne(User)
