@@ -10,6 +10,4 @@ const User = sequelize.define('user', {
   car: { type: Sequelize.STRING, allowNull: false }
 })
 
-User.hasOne(Spot)
-
 export default User
