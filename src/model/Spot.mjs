@@ -9,6 +9,4 @@ const Spot = sequelize.define('spot', {
   occupied: { type: Sequelize.STRING, allowNull: false },
 })
 
-Spot.hasOne(User)
-
 export default Spot

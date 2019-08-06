@@ -34,10 +34,13 @@ router.get("/search-by-user", async (req, res) => {
 router.put('/assign/:id', async (req, res) => {
   try {
     const spot = await Spot.findByPk(req.params.id)
+    console.log(spot)
     if (spot) {
       const { userId } = req.body
-      await spot.update({ userId, occupancy: true, occupied: "yes" })
-      return res.json({ msg: `Spot °${spot.number} on floor ${spot.floor} is now assigned` })
+      await spot.update({ userId, occupancy: userId ? true : false, occupied: userId ? "yes" : "no" })
+      return res.json({
+        msg: userId ? `Spot °${spot.number} on floor ${spot.floor} is now assigned` : `Spot °${spot.number} is now free`
+      })
     }
     else {
       return notFound(res)
